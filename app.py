@@ -1,10 +1,46 @@
-from flask import Flask
+from flask import Flask, jsonify, request
+from http import HTTPStatus
 
 app = Flask(__name__)
-@app.route("/")
 
-def hello():
-    return "Hello World!"
+recipes = [
+    {
+        'id': 1,
+        'name': 'Pasta Funghi',
+        'description': 'A creamy pasta funghi that is easy to make.'
+    },
+    {
+        'id': 2,
+        'name': 'Puff Pastry with Goat Cheese',
+        'description': 'Soft Goat cheese wrapped in puff pastry with honey and walnuts.'
+    }
+]
 
-if __name__ == "__main__":
-    app.run()
+@app.route('/recipes', methods=['GET'])
+
+def get_recipes():
+    return jsonify({'data': recipes})
+
+@app.route('/recipes/<int:recipe_id>', methods=['GET'])
+
+def get_recipes(recipe_id):
+    recipe = next((recipe for recipe in recipes if recipe['id'] == recipe_id), None)
+    if recipe:
+        return jsonify(recipe)
+    return jsonify({'message': 'recipe not found'}), HTTPStatus.NOT_FOUND
+
+
+@app.route('/recipes', methods=['POST'])
+
+def create_recipe():
+    data = request.get_json()
+    name = data.get('name')
+    description = data.get('description')
+    recipe = {
+        'id': len(recipes) + 1,
+        'name': name,
+        'description': description
+    }
+
+    recipes.append(recipe)
+    return jsonify(recipe), HTTPStatus.CREATED 
