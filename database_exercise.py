@@ -1,6 +1,6 @@
 import sqlite3
 
-sqlite3.connect('recipes')
+connection = sqlite3.connect('recipes.db')
 
 recipe_list =[
     ('Bahn Mi', 25, 'Vietnam'),
@@ -10,3 +10,5 @@ recipe_list =[
     ('Chicken Satay', 30, 'Indonesian'),
     ('Korean Oven Chicken Wings', 60, 'Korea')    
 ]
+
+connection.close()
